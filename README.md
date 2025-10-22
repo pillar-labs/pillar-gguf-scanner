@@ -92,23 +92,6 @@ asyncio.run(main())
 
 The low-level helpers `fetch_chat_templates_from_url`, `afetch_chat_templates_from_url`, and `build_huggingface_url` are also available for integrating into existing pipelines. When you need to reuse HTTP connections across multiple scans, wrap your workflow with `scanner_session()` or `ascanner_session()` to share `httpx` clients safely.
 
-## Observability Hooks
-
-Scans emit structured events when you provide `ScannerConfig(event_handler=...)`. Each callback receives an event name and a payload dictionary:
-
-```python
-from pillar_gguf_scanner import GGUFTemplateScanner, ScannerConfig
-
-def handle_event(name: str, payload: dict) -> None:
-    if name == "remote_fetch_failed":
-        print(f"remote fetch failure: {payload['error']}")
-
-scanner = GGUFTemplateScanner(config=ScannerConfig(event_handler=handle_event))
-scanner.scan("https://example.com/bad-model.gguf")
-```
-
-Built-in events include `heuristic_match`, `pillar_response`, `pillar_scan_failed`, and `remote_fetch_failed`.
-
 ## Customising Heuristics
 
 Provide a `ScannerConfig` with your own rule set or severity overrides:
